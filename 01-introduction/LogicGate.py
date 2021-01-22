@@ -98,6 +98,22 @@ class OrGate(BinaryGate):
             return 0
 
 
+class NandGate(AndGate):
+    def __init__(self, label):
+        super().__init__(label)
+
+    def perform_gate_logic(self):
+        return 1 if super().perform_gate_logic() == 0 else 0
+
+
+class NorGate(OrGate):
+    def __init__(self, label):
+        super().__init__(label)
+
+    def perform_gate_logic(self):
+        return 1 if super().perform_gate_logic() == 0 else 0
+
+
 class NotGate(UnaryGate):
     def __init__(self, label):
         super().__init__(label)
@@ -107,7 +123,8 @@ class NotGate(UnaryGate):
         return 1 if pin == 0 else 0
 
 
-def main():
+def lhs():
+    # not [(A and B) or (C and D)]
     g1 = AndGate("G1")
     g2 = AndGate("G2")
     g3 = OrGate("G3")
@@ -115,7 +132,23 @@ def main():
     c1 = Connector(g1, g3)
     c2 = Connector(g2, g3)
     c3 = Connector(g3, g4)
-    print(g4.get_output())
+    return g4.get_output()
+
+
+def rhs():
+    # [not (A and B)] and [not (C and D)]
+    g1 = NandGate("G1")
+    g2 = NandGate("G2")
+    g3 = AndGate("g3")
+    c1 = Connector(g1, g3)
+    c2 = Connector(g2, g3)
+    return g3.get_output()
+
+
+def main():
+
+    print(lhs())
+    print(rhs())
 
 
 if __name__ == '__main__':
